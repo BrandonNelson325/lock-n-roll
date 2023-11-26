@@ -178,7 +178,7 @@ export default function AddPlayersScreen({ navigation }) {
           style={styles.defaultButton}
           onPress={() => navigateChoosePreviousPlayers()}
           underlayColor='#fff'>
-          <Text style={styles.defaultText}>Choose Players</Text>
+          <Text style={styles.defaultText}>Previous Players</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.continue}>
