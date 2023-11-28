@@ -116,7 +116,7 @@ export default function Play({navigation}) {
             }
         }
         if (roundEnd) {
-            return EndRound()
+            EndRound()
         }
 
         setState({
@@ -151,7 +151,7 @@ export default function Play({navigation}) {
     }
 
     const addScore = (val) => {
-
+        let wasSeven = false
         let total = state.roundScore
         if (state.numRoll <= 3) {
             if (val === 2 || val === 12) {
@@ -165,7 +165,8 @@ export default function Play({navigation}) {
             if (val === 2 || val === 12) {
                 total = total * 3
             } else if (val === 7) {
-                return EndRound()
+                wasSeven = true
+                EndRound()
             } else if (val === 'Doubles') {
                 total = total * 2
             } else {
@@ -176,6 +177,15 @@ export default function Play({navigation}) {
         // this is in a separate loop because we want to escape when it matches
         let currentPlayerName = ''
         let currentPlayerId = 0
+        if(wasSeven) {
+            if (state.players[state.currentPlayerId + 1]) {
+                currentPlayerName = state.players[state.currentPlayerId + 1].name
+                currentPlayerId = state.players[state.currentPlayerId + 1].id
+            } else {
+                currentPlayerName = state.players[0].name
+                currentPlayerId = state.players[0].id
+            }
+        }
         for (let i = state.currentPlayerId; i < state.players.length; i++) {
             if (!state.players[i].roundLocked && !state.players[i].locked) {
                 currentPlayerName = state.players[i].name
