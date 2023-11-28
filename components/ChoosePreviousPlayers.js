@@ -31,7 +31,8 @@ const storeJsonData = async (key,value) => {
 
 export default function ChoosePreviousPlayers({ navigation }) {
     const [state, setState] = useState({
-      previousPlayers:[]
+      previousPlayers:[],
+      playersToAdd:[]
     })
 
     const getPreviousPlayers = async() => {
@@ -65,27 +66,33 @@ export default function ChoosePreviousPlayers({ navigation }) {
     };
 
     const addToPlayerList = (player) => {
-        let val = !player.checked
         state.previousPlayers[player.id - 1].checked = !state.previousPlayers[player.id - 1].checked
+        if (state.previousPlayers[player.id - 1].checked) {
+          state.playersToAdd.push(state.previousPlayers[player.id - 1].name)
+        } else {
+          for (let i = 0; i < state.playersToAdd.length; i++){
+            if (state.playersToAdd[i] === player.name) {
+              state.playersToAdd.splice(i,1)
+            }
+          }
+        }
         setState({
             ...state,
-            previousPlayers:state.previousPlayers
+            previousPlayers:state.previousPlayers,
+            playersToAdd:state.playersToAdd
         })
     }
 
     const addToGame = async () => {
-        let list = []
         for (let i = 0; i < state.previousPlayers.length; i++){
-            if(state.previousPlayers[i].checked) {
-                list.push(state.previousPlayers[i].name)
-            }
             state.previousPlayers[i].checked = false
         }
         setState({
             ...state,
-            previousPlayers:state.previousPlayers
+            previousPlayers:state.previousPlayers,
+            playersToAdd:[]
         })
-        storeJsonData('playersToAdd',list)
+        storeJsonData('playersToAdd',state.playersToAdd)
         navigation.navigate('AddPlayersScreen')
         
     }
@@ -93,6 +100,9 @@ export default function ChoosePreviousPlayers({ navigation }) {
 
     return (
         <View style={styles.addPlayers}>
+        <View>
+          <Text style={{textAlign:'center',fontWeight:'bold'}}>Click players in the order {'\n'}they will be playing the game!</Text>
+        </View>
         <View style={{height: 650}}>
           <ScrollView>
           {state.previousPlayers.map(player => {
